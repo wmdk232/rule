@@ -1,6 +1,6 @@
 # 订阅支持V2ray/URL、mihomo等格式。
 subscription {
-    sub: 'https://example.com/sub'
+    sub: 'http://192.168.2.3:3008/T3B9dgzBzdRbBF8Aqx7P/download/collection/singbox'
     route: direct
 }
 
@@ -11,7 +11,7 @@ subscription {
 # policy 可选 select（面板手动选，默认）/ min_moving_avg（延迟最低）/ fallback（按顺序取第一个存活）/ loadbalance（轮询）/ score（按实际连接质量评分）；final：所选节点不可用时改走的组
 group {
     Proxy {
-        filter: name(regex: '🇭🇰|HK|hk|香港|港|HongKong') && !name(regex: '排除')
+        filter: name(regex: '🇭🇰|HK|hk|香港|港|HongKong|家宽') && !name(regex: '排除|3x')
         final: Final
         interrupt_connections: true
     }
@@ -20,26 +20,7 @@ group {
         final: Final
         interrupt_connections: true
     }
-    YouTube {
-        filter: name(regex: '🇭🇰|HK|hk|香港|港|HongKong') && !name(regex: '排除')
-        final: Final
-        interrupt_connections: true
-    }
-    Google {
-        filter: name(regex: '🇭🇰|HK|hk|香港|港|HongKong') && !name(regex: '排除')
-        final: Final
-        interrupt_connections: true
-    }
-    Github {
-        filter: name(regex: '🇯🇵|JP|jp|日本|日|Japan') && !name(regex: '排除')
-        final: Final
-        interrupt_connections: true
-    }
-    Telegram {
-        filter: name(regex: '🇭🇰|HK|hk|香港|港|HongKong') && !name(regex: '排除')
-        final: Final
-        interrupt_connections: true
-    }
+
     TikTok {
         filter: name(regex: '🇺🇸|US|美国|美|United States') && !name(regex: '排除')
         final: Final
@@ -50,31 +31,17 @@ group {
         final: Final
         interrupt_connections: true
     }
-    Wallet {
-        filter: name(regex: '🇺🇸|US|美国|美|United States') && !name(regex: '排除')
-        final: Final
-        interrupt_connections: true
-    }
-    Steam {
+    HK {
         filter: name(regex: '🇭🇰|HK|hk|香港|港|HongKong') && !name(regex: '排除')
         final: Final
         interrupt_connections: true
     }
-    Microsoft {
+    jp {
         filter: name(regex: '🇯🇵|JP|jp|日本|日|Japan') && !name(regex: '排除')
         final: Final
         interrupt_connections: true
     }
-    OneDrive {
-        filter: name(regex: '🇯🇵|JP|jp|日本|日|Japan') && !name(regex: '排除')
-        final: Final
-        interrupt_connections: true
-    }
-    Apple {
-        filter: name(regex: '🇭🇰|HK|hk|香港|港|HongKong') && !name(regex: '排除')
-        final: Final
-        interrupt_connections: true
-    }
+
     Final {
         filter: !name(regex: '官网|剩余|流量|套餐|免费|订阅|到期时间|直连|Expire Date|Traffic|ExpireDate')
         policy: score
@@ -107,29 +74,71 @@ routing {
     dip(geoip: private, geoip: cn) && !dport(53, 853) -> direct(must)
     dport(853) -> block
     l4proto(udp) && dport(443) -> block
-    domain(suffix: googleapis.cn, suffix: xn--ngstr-lra8j.com) -> Google
+    # 115网盘
+    domain(suffix: 115.com) -> direct
+    domain(suffix: 115cdn.com) -> direct
+    domain(suffix: 115cdn.net) -> direct
+    domain(suffix: 115img.com) -> direct
+    domain(suffix: 116cd.cn) -> direct
+    domain(suffix: 116cd.com) -> direct
+    domain(suffix: 116cd.net) -> direct
+    domain(suffix: anxia.com) -> direct
+    domain(suffix: sq.cc) -> direct
+    domain(full: fhnfile.oss-cn-shenzhen.aliyuncs.com) -> direct
+
+    # 123网盘
+    domain(suffix: 123pan.com) -> direct
+    domain(suffix: 123pan.cn) -> direct
+    domain(suffix: 123278.com) -> direct
+    domain(suffix: 123684.com) -> direct
+    domain(suffix: cjjd17.com) -> direct
+    domain(suffix: cjjd15.com) -> direct
+    domain(suffix: cjjd19.com) -> direct
+    domain(suffix: mingfucdn.com) -> direct
+    # 核心 DMM 域名（含 CDN 和 API），全部走日本节点
+    domain(suffix: dmm.co.jp) -> jp
+    domain(suffix: dmm.com) -> jp
+    domain(suffix: dmmapis.com) -> jp
+    domain(suffix: digitaldmm.co.jp) -> jp
+    domain(suffix: dmm-extension.com) -> jp
+    # 其他有地区限制的日本站点
+    domain(suffix: mgstage.com) -> jp
+    domain(suffix: fc2.com) -> jp
+    domain(suffix: caribbeancom.com) -> jp
+    domain(suffix: hbox.jp) -> jp
+    domain(suffix: avmoo.website) -> jp
+    domain(suffix: avsox.click) -> jp
+    # 资料/索引站（无严格地区限制，可走普通代理或直连）
+    domain(suffix: javbus.com) -> HK
+    domain(suffix: jav321.com) -> HK
+    domain(suffix: javten.com) -> HK
+    domain(suffix: theporndb.net) -> HK
+    domain(suffix: xchina.co) -> HK
+    domain(suffix: javlibrary.com) -> HK
+    domain(suffix: missav123.com) -> HK
+    domain(suffix: googleapis.cn, suffix: xn--ngstr-lra8j.com) -> Proxy
     domain(suffix: withgoogle.com, suffix: notebooklm.google, geosite: category-ai-!cn) -> AI
-    domain(geosite: youtube) -> YouTube
-    domain(geosite: google) -> Google
-    domain(geosite: github) -> Github
-    domain(geosite: onedrive) -> OneDrive
+    domain(geosite: youtube) -> Proxy
+    domain(geosite: google) -> Proxy
+    domain(geosite: github) -> Proxy
+    domain(geosite: onedrive) -> HK
     domain(geosite: microsoft@cn) -> direct
-    domain(geosite: microsoft) -> Microsoft
+    domain(geosite: microsoft) -> HK
     domain(geosite: apple@cn) -> direct
-    domain(geosite: apple) -> Apple
-    domain(geosite: telegram) -> Telegram
+    domain(geosite: apple) -> HK
+    domain(geosite: telegram) -> Proxy
     domain(geosite: tiktok) -> TikTok
     domain(geosite: netflix) -> Netflix
-    domain(geosite: paypal, geosite: binance, geosite: okx, geosite: category-cryptocurrency) -> Wallet
+    domain(geosite: paypal, geosite: binance, geosite: okx, geosite: category-cryptocurrency) -> AI
     domain(geosite: steam@cn) -> direct
-    domain(geosite: steam) -> Steam
+    domain(geosite: steam) -> HK
     domain(geosite: geolocation-!cn) -> Proxy
-    dip(geoip: telegram) -> Telegram
+    dip(geoip: telegram) -> Proxy
     fallback: Final
 }
 
 global {
-    lan_interface: ens18 # 改成自己的局域网网卡，ip a 查看
+    lan_interface: eth0 # 改成自己的局域网网卡，ip a 查看
     wan_interface: auto
     # 面板账号、节点选择存这里；OpenWrt 的 /var 在内存里，重启会丢
     data_dir: '/etc/honk'
