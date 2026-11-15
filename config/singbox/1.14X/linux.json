@@ -68,6 +68,7 @@
       {"network": "icmp", "outbound": "直连"},
       {"clash_mode": "Direct", "outbound": "直连"},
       {"clash_mode": "Global", "outbound": "GLOBAL"},
+        {"domain": ["api0.bigmelook.com","www.abcmfmmmmm9y4e6snykhkead3nxekj07ouaqq28tcp4cx1yn7dbuagix6.org","m1.tohno-0.top"],"outbound": "直连"},
       {"domain_suffix": ["dmm.co.jp", "dmm.com", "dmmapis.com", "dmm-extension.com", "fanza.jp", "caribbeancom.com", "adult.contents.fc2.com", "fc2.com", "hbox.jp", "mgstage.com", "airav.io", "avbase.net", "avmoo.shop", "avsox.click", "javten.com", "digitaldmm.co.jp"], "outbound": "日本手动"},
       {"domain_suffix": ["jav321.com", "javbus.com", "javdb.com", "javlibrary.com", "freejavbt.com", "missav123.com", "7mmtv.sx", "madou.club", "madouqu.com", "theporndb.net", "xchina.co"], "outbound": "香港手动"},
       {"rule_set": "geosite-private", "outbound": "直连"},
