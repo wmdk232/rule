@@ -11,7 +11,6 @@
     ],
     "rules": [
       {"source_ip_cidr": ["192.168.2.2/31", "192.168.2.4/30", "192.168.2.8/31"], "action": "route", "server": "ali"},
-      {"domain": ["api0.bigmelook.com","www.abcmfmmmmm9y4e6snykhkead3nxekj07ouaqq28tcp4cx1yn7dbuagix6.org","m1.tohno-0.top"],"action": "route","server": "ali"}
       {"query_type": ["HTTPS", "SVCB"], "action": "reject"},
       {"clash_mode": "Direct", "action": "route", "server": "ali"},
       {"clash_mode": "Global", "action": "route", "server": "fakeip"},
