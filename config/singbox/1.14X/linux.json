@@ -2,6 +2,7 @@
   "$schema": "https://sing-box.sagernet.org/schema.json",
   "dns": {
     "servers": [
+      {"source_ip_cidr": ["192.168.2.2/31","192.168.2.4/30","192.168.2.8/31"],"invert": true,"action": "route","server": "ali"},
       {"tag": "local", "type": "local", "prefer_go": true},
       {"tag": "ali", "type": "https", "server": "223.5.5.5"},
       {"tag": "tx", "type": "https", "server": "doh.pub", "domain_resolver": "hosts"},
