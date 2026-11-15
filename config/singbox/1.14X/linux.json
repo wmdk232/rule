@@ -56,7 +56,6 @@
   ],
   "route": {
     "rules": [
-      {"ip_cidr": ["172.16.0.0/12"],"action": "bypass"},
       {"type": "logical", "mode": "and", "rules": [{"port": [53, 853], "invert": true}, {"clash_mode": "Global", "invert": true}, {"type": "logical", "mode": "or", "rules": [{"ip_is_private": true}, {"rule_set": "geoip-cn"}]}], "action": "bypass"},
       {"type": "logical", "mode": "or", "rules": [{"domain_suffix": "push.apple.com"}, {"rule_set": "geoip-telegram"}], "invert": true, "action": "sniff", "sniffer": ["http", "tls", "stun", "quic", "dns"], "timeout": "100ms"},
       {"type": "logical", "mode": "or", "rules": [{"port": 53}, {"protocol": "dns"}], "action": "hijack-dns"},
@@ -105,13 +104,17 @@
     "default_domain_resolver": {"server": "ali"}
   },
   "inbounds": [
-    {
-      "tag": "tun-in",
-      "type": "tun",
-      "address": [
-        "172.19.0.1/30",
-        "fdfe:dcba:9876::1/126"
-      ],
+      {"tag": "tun-in","type": "tun","address": ["172.19.0.1/30"],"auto_route": true,"auto_redirect": true,
+    "route_exclude_address": [
+      "192.168.2.10/28",
+      "192.168.2.26/27",
+      "192.168.2.58/26",
+      "192.168.2.122/25",
+      "192.168.2.250/31",
+      "192.168.2.252/30",
+      "192.168.2.64/26"
+    ]
+  },
       "auto_route": true,
       "auto_redirect": true
     },
