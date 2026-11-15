@@ -104,7 +104,7 @@
     "default_domain_resolver": {"server": "ali"}
   },
     "inbounds": [
-      {"tag": "tun-in","type": "tun","address": ["172.19.0.1/30"],"auto_route": true,"auto_redirect": true,"route_exclude_address": ["192.168.2.10/28","192.168.2.26/27","192.168.2.58/26","192.168.2.122/25","192.168.2.250/31","192.168.2.252/30","192.168.2.64/26"]},
+      {"tag": "tun-in","type": "tun","address": ["172.19.0.1/30"],"auto_route": true,"auto_redirect": true,"route_exclude_address": ["192.168.2.100/30","192.168.2.104/29","192.168.2.112/28","192.168.2.128/26","192.168.2.192/27","192.168.2.224/28","192.168.2.240/32"]},
       {"tag": "mixed-in","type": "mixed","listen": "0.0.0.0","listen_port": 7890}
   ],
   "services": [
