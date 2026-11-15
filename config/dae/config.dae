@@ -1,6 +1,6 @@
 # 订阅用V2ray/URL格式，不支持mihomo格式。
 subscription {
-    sub: 'https://example.com/sub'
+    sub: 'http://192.168.2.3:3001/a7f3c9e2b1d84f60/download/collection/singbox'
 }
 
 # node {
@@ -15,59 +15,14 @@ group {
         policy: min_moving_avg
     }
     AI {
-        filter: name(regex: '🇺🇸|US|美国|美|United States') && !name(regex: '排除')
+        filter: name(regex: '🇺🇸|US|美国|美|United States|新加坡') && !name(regex: '排除')
         policy: min_moving_avg
     }
-    YouTube {
-        filter: name(regex: '🇭🇰|HK|hk|香港|港|HongKong') && !name(regex: '排除')
-        policy: min_moving_avg
-    }
-    Google {
-        filter: name(regex: '🇭🇰|HK|hk|香港|港|HongKong') && !name(regex: '排除')
-        policy: min_moving_avg
-    }
-    Github {
+    jp {
         filter: name(regex: '🇯🇵|JP|jp|日本|日|Japan') && !name(regex: '排除')
-        policy: min_moving_avg
-    }
-    Telegram {
-        filter: name(regex: '🇭🇰|HK|hk|香港|港|HongKong') && !name(regex: '排除')
-        policy: min_moving_avg
-    }
-    TikTok {
-        filter: name(regex: '🇺🇸|US|美国|美|United States') && !name(regex: '排除')
-        policy: min_moving_avg
-    }
-    Netflix {
-        filter: name(regex: '🇺🇸|US|美国|美|United States') && !name(regex: '排除')
-        policy: min_moving_avg
-    }
-    Wallet {
-        filter: name(regex: '🇺🇸|US|美国|美|United States') && !name(regex: '排除')
-        policy: min_moving_avg
-    }
-    Steam {
-        filter: name(regex: '🇭🇰|HK|hk|香港|港|HongKong') && !name(regex: '排除')
-        policy: min_moving_avg
-    }
-    Microsoft {
-        filter: name(regex: '🇯🇵|JP|jp|日本|日|Japan') && !name(regex: '排除')
-        policy: min_moving_avg
-    }
-    OneDrive {
-        filter: name(regex: '🇯🇵|JP|jp|日本|日|Japan') && !name(regex: '排除')
-        policy: min_moving_avg
-    }
-    Apple {
-        filter: name(regex: '🇭🇰|HK|hk|香港|港|HongKong') && !name(regex: '排除')
-        policy: min_moving_avg
-    }
-    Final {
-        filter: !name(regex: '官网|剩余|流量|套餐|免费|订阅|到期时间|直连|Expire Date|Traffic|ExpireDate')
         policy: min_moving_avg
     }
 }
-
 dns {
     upstream {
         remote: 'https://8.8.8.8/dns-query'
@@ -95,28 +50,48 @@ routing {
     dport(853) -> block
     dip(geoip: private, geoip: cn) -> direct
     l4proto(udp) && dport(443) -> block
-    domain(suffix: googleapis.cn, suffix: xn--ngstr-lra8j.com) -> Google
-    domain(suffix: withgoogle.com, suffix: notebooklm.google, geosite: category-ai-!cn) -> AI
-    domain(geosite: youtube) -> YouTube
-    domain(geosite: google) -> Google
-    domain(geosite: github) -> Github
-    domain(geosite: onedrive) -> OneDrive
+
+    # 核心 DMM 域名（含 CDN 和 API），全部走日本节点
+    domain(suffix: dmm.co.jp) -> jp
+    domain(suffix: dmm.com) -> jp
+    domain(suffix: dmmapis.com) -> jp
+    domain(suffix: digitaldmm.co.jp) -> jp
+    domain(suffix: dmm-extension.com) -> jp
+    # 其他有地区限制的日本站点
+    domain(suffix: mgstage.com) -> jp
+    domain(suffix: fc2.com) -> jp
+    domain(suffix: caribbeancom.com) -> jp
+    domain(suffix: hbox.jp) -> jp
+    domain(suffix: avmoo.website) -> jp
+    domain(suffix: avsox.click) -> jp
+    # 资料/索引站（无严格地区限制，可走普通代理或直连）
+    domain(suffix: javbus.com) -> Proxy
+    domain(suffix: jav321.com) -> Proxy
+    domain(suffix: javten.com) -> Proxy
+    domain(suffix: theporndb.net) -> Proxy
+    domain(suffix: xchina.co) -> Proxy
+    domain(suffix: googleapis.cn, suffix: xn--ngstr-lra8j.com) -> Proxy
+    domain(suffix: withgoogle.com, suffix: notebooklm.google, geosite: category-ai-!cn) -> jp
+    domain(geosite: youtube) -> Proxy
+    domain(geosite: google) -> Proxy
+    domain(geosite: github) -> Proxy
+    domain(geosite: onedrive) -> Proxy
     domain(geosite: microsoft@cn) -> direct
-    domain(geosite: microsoft) -> Microsoft
+    domain(geosite: microsoft) -> direct
     domain(geosite: apple@cn) -> direct
-    domain(geosite: apple) -> Apple
-    domain(geosite: telegram) -> Telegram
-    domain(geosite: tiktok) -> TikTok
-    domain(geosite: netflix) -> Netflix
-    domain(geosite: paypal, geosite: binance, geosite: okx, geosite: category-cryptocurrency) -> Wallet
+    domain(geosite: apple) -> direct
+    domain(geosite: telegram) -> Proxy
+    domain(geosite: tiktok) -> Proxy
+    domain(geosite: netflix) -> Proxy
+    domain(geosite: paypal, geosite: binance, geosite: okx, geosite: category-cryptocurrency) -> Proxy
     domain(geosite: steam@cn) -> direct
-    domain(geosite: steam) -> Steam
+    domain(geosite: steam) -> Proxy
     domain(geosite: geolocation-!cn) -> Proxy
-    fallback: Final
+    fallback: Proxy
 }
 
 global {
-    lan_interface: ens18 # 改成自己的局域网网卡，ip a 查看
+    lan_interface: br-lan1 # 改成自己的局域网网卡，ip a 查看
     wan_interface: auto
     auto_config_kernel_parameter: true
     so_mark_from_dae: 0
@@ -126,4 +101,15 @@ global {
     log_level: info
     check_interval: 30s
     check_tolerance: 50ms
+}
+
+api {
+    enabled: true
+    listen: '127.0.0.1:9527'
+
+    # 请替换成自己生成的随机 Token
+    secret: '5b667a013daa227f9b17bc4fe1da37b3c9f05c2b35b7872e9ed7659d486fa893'
+
+    # Doona 前端静态文件目录
+    ui: '/usr/share/doona-web'
 }
