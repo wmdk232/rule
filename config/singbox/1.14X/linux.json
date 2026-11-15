@@ -10,26 +10,24 @@
       {"type": "hosts", "tag": "hosts", "predefined": {"doh.pub": ["1.12.12.21", "120.53.53.53"]}}
     ],
     "rules": [
-      {"source_ip_cidr": ["192.168.2.2/31", "192.168.2.4/30", "192.168.2.8/31"], "action": "route", "server": "ali"},
       {"query_type": ["HTTPS", "SVCB"], "action": "reject"},
-      {"clash_mode": "Direct", "action": "route", "server": "ali"},
-      {"clash_mode": "Global", "action": "route", "server": "fakeip"},
-      {"rule_set": ["fakeipfilter-cn", "geosite-cn", "geosite-microsoft@cn", "geosite-apple@cn", "geosite-private"], "action": "route", "server": "ali"},
-      {"rule_set": "fakeipfilter-!cn", "action": "route", "server": "google"},
-      {"type": "logical","mode": "and","rules": [ {"query_type": ["A", "AAAA"]},
-      {"rule_set": "geosite-geolocation-!cn", "invert": true} ],"action": "evaluate", "server": "google", "client_subnet": "223.5.5.0/24", "timeout": "2s" },
-      {"match_response": true, "rule_set": "geoip-cn", "action": "route", "server": "ali"},
-      {"query_type": ["A", "AAAA"], "action": "route", "server": "fakeip", "rewrite_ttl": 1}
+      {"clash_mode": "Direct", "server": "ali"},
+      {"clash_mode": "Global", "server": "fakeip"},
+      {"rule_set": ["fakeipfilter-cn", "geosite-cn", "geosite-microsoft@cn", "geosite-apple@cn", "geosite-private"], "server": "ali"},
+      {"rule_set": "fakeipfilter-!cn", "server": "google"},
+      {"type": "logical", "mode": "and", "rules": [{"query_type": ["A", "AAAA"]}, {"rule_set": "geosite-geolocation-!cn", "invert": true}], "action": "evaluate", "server": "google", "client_subnet": "223.5.5.0/24","timeout": "2s"},
+      {"match_response": true, "rule_set": "geoip-cn", "server": "ali"},
+      {"query_type": ["A", "AAAA"], "server": "fakeip", "rewrite_ttl": 1}
     ],
     "final": "google",
-    "strategy": "ipv4_only",
+    "strategy": "ipv4_only", 
     "cache_capacity": 8192,
     "optimistic": {"enabled": true},
     "reverse_mapping": true
   },
   "outbounds": [
     {"tag": "默认代理", "type": "selector", "outbounds": ["日本手动", "狮城手动", "香港手动", "香港自动", "美国手动", "手动选择", "自动选择"]},
-    {"tag": "AI", "type": "selector", "outbounds": ["日本手动", "狮城手动", "香港手动", "美国手动", "手动选择", "自动选择"]},
+    {"tag": "AI", "type": "selector", "outbounds": ["日本手动", "狮城手动", "香港手动","美国手动", "手动选择", "自动选择"]},
     {"tag": "YouTube", "type": "selector", "outbounds": ["日本手动", "狮城手动", "香港手动", "香港自动", "美国手动", "手动选择", "自动选择"]},
     {"tag": "Google", "type": "selector", "outbounds": ["日本手动", "狮城手动", "香港手动", "香港自动", "美国手动", "手动选择", "自动选择"]},
     {"tag": "Github", "type": "selector", "outbounds": ["日本手动", "狮城手动", "香港手动", "香港自动", "美国手动", "手动选择", "自动选择"]},
@@ -45,7 +43,7 @@
     {"tag": "日本手动", "type": "selector", "outbounds": []},
     {"tag": "狮城手动", "type": "selector", "outbounds": []},
     {"tag": "香港手动", "type": "selector", "outbounds": []},
-    {"tag": "香港自动", "type": "urltest", "outbounds": [], "url": "https://clients1.google.com/generate_204", "interval": "30m", "tolerance": 100},
+    {"tag": "香港自动", "type": "urltest",  "outbounds": [], "url": "https://clients1.google.com/generate_204", "interval": "30m", "tolerance": 100},
     {"tag": "美国手动", "type": "selector", "outbounds": []},
     {"tag": "手动选择", "type": "selector", "outbounds": []},
     {"tag": "自动选择", "type": "urltest", "outbounds": [], "url": "https://clients1.google.com/generate_204", "interval": "30m", "tolerance": 100},
@@ -58,7 +56,6 @@
   ],
   "route": {
     "rules": [
-      {"source_ip_cidr": ["192.168.2.2/31", "192.168.2.4/30", "192.168.2.8/31"], "invert": true, "outbound": "直连"},
       {"type": "logical", "mode": "and", "rules": [{"port": [53, 853], "invert": true}, {"clash_mode": "Global", "invert": true}, {"type": "logical", "mode": "or", "rules": [{"ip_is_private": true}, {"rule_set": "geoip-cn"}]}], "action": "bypass"},
       {"type": "logical", "mode": "or", "rules": [{"domain_suffix": "push.apple.com"}, {"rule_set": "geoip-telegram"}], "invert": true, "action": "sniff", "sniffer": ["http", "tls", "stun", "quic", "dns"], "timeout": "100ms"},
       {"type": "logical", "mode": "or", "rules": [{"port": 53}, {"protocol": "dns"}], "action": "hijack-dns"},
@@ -68,10 +65,10 @@
       {"network": "icmp", "outbound": "直连"},
       {"clash_mode": "Direct", "outbound": "直连"},
       {"clash_mode": "Global", "outbound": "GLOBAL"},
-      {"domain": ["api0.bigmelook.com","www.abcmfmmmmm9y4e6snykhkead3nxekj07ouaqq28tcp4cx1yn7dbuagix6.org","m1.tohno-0.top"],"outbound": "直连"},
-      {"domain_suffix": ["dmm.co.jp", "dmm.com", "dmmapis.com", "dmm-extension.com", "fanza.jp", "caribbeancom.com", "adult.contents.fc2.com", "fc2.com", "hbox.jp", "mgstage.com", "airav.io", "avbase.net", "avmoo.shop", "avsox.click", "javten.com", "digitaldmm.co.jp"], "outbound": "日本手动"},
-      {"domain_suffix": ["jav321.com", "javbus.com", "javdb.com", "javlibrary.com", "freejavbt.com", "missav123.com", "7mmtv.sx", "madou.club", "madouqu.com", "theporndb.net", "xchina.co"], "outbound": "香港手动"},
       {"rule_set": "geosite-private", "outbound": "直连"},
+      {"domain": ["api0.bigmelook.com","www.abcmfmmmmm9y4e6snykhkead3nxekj07ouaqq28tcp4cx1yn7dbuagix6.org","m1.tohno-0.top"],"outbound": "直连"},
+      {"domain_suffix": ["dmm.co.jp","dmm.com","dmmapis.com","dmm-extension.com","fanza.jp","caribbeancom.com","adult.contents.fc2.com","fc2.com","hbox.jp","mgstage.com","airav.io","avbase.net","avmoo.shop","avsox.click","javten.com","digitaldmm.co.jp"],"outbound": "日本手动"},
+      {"domain_suffix": ["jav321.com","javbus.com","javdb.com","javlibrary.com","freejavbt.com","missav123.com","7mmtv.sx","madou.club","madouqu.com","theporndb.net","xchina.co"],"outbound": "香港手动"},
       {"rule_set": "geosite-category-ai-!cn", "outbound": "AI"},
       {"rule_set": "geosite-youtube", "outbound": "YouTube"},
       {"rule_set": "geosite-google", "outbound": "Google"},
@@ -97,7 +94,7 @@
     ],
     "rule_set": [
       {"tag": ["fakeipfilter-cn", "fakeipfilter-!cn"], "type": "remote", "format": "source", "url": "https://gh-proxy.com/https://raw.githubusercontent.com/qichiyuhub/rule/refs/heads/main/rules/{tag}.json"},
-      {"tag": ["geosite-category-ai-!cn", "geosite-youtube", "geosite-google", "geosite-github", "geosite-onedrive", "geosite-microsoft", "geosite-microsoft@cn", "geosite-apple", "geosite-apple@cn", "geosite-telegram", "geosite-tiktok", "geosite-netflix", "geosite-paypal", "geosite-binance", "geosite-okx", "geosite-category-cryptocurrency", "geosite-steam@cn", "geosite-steam", "geosite-geolocation-!cn", "geosite-cn", "geosite-private"], "type": "remote", "format": "binary", "url": "https://gh-proxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/{tag}.srs"},
+      {"tag": ["geosite-category-ai-!cn", "geosite-youtube", "geosite-google", "geosite-github", "geosite-onedrive", "geosite-microsoft", "geosite-microsoft@cn","geosite-apple", "geosite-apple@cn", "geosite-telegram", "geosite-tiktok", "geosite-netflix", "geosite-paypal", "geosite-binance", "geosite-okx", "geosite-category-cryptocurrency", "geosite-steam@cn", "geosite-steam", "geosite-geolocation-!cn", "geosite-cn", "geosite-private"], "type": "remote", "format": "binary", "url": "https://gh-proxy.com/https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/{tag}.srs"},
       {"tag": "geoip-telegram", "type": "remote", "format": "binary", "url": "https://gh-proxy.com/https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/sing/geo/geoip/telegram.srs"},
       {"tag": "geoip-cn", "type": "remote", "format": "binary", "url": "https://gh-proxy.com/https://raw.githubusercontent.com/SagerNet/sing-geoip/rule-set/geoip-cn.srs"}
     ],
@@ -110,7 +107,10 @@
     {
       "tag": "tun-in",
       "type": "tun",
-      "address": ["172.19.0.1/30","fdfe:dcba:9876::1/126"],
+      "address": [
+        "172.19.0.1/30",
+        "fdfe:dcba:9876::1/126"
+      ],
       "auto_route": true,
       "auto_redirect": true
     },
@@ -148,7 +148,16 @@
       "default_mode": "Rule"
     }
   },
-  "certificate": {"store": "chrome"},
-  "ntp": {"enabled": true, "server": "time.apple.com"},
-  "log": {"disabled": false, "level": "info", "timestamp": true}
+  "certificate": {
+    "store": "chrome"
+  },
+  "ntp": {
+    "enabled": true,
+    "server": "time.apple.com"
+  },
+  "log": {
+    "disabled": false,
+    "level": "info",
+    "timestamp": true
+  }
 }
