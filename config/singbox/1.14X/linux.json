@@ -11,6 +11,7 @@
     ],
     "rules": [
       {"query_type": ["HTTPS", "SVCB"], "action": "reject"},
+      {"source_ip_cidr": ["192.168.2.100/30","192.168.2.104/29","192.168.2.112/28","192.168.2.128/26","192.168.2.192/27","192.168.2.224/28","192.168.2.240/32"],"server": "ali"},
       {"clash_mode": "Direct", "server": "ali"},
       {"clash_mode": "Global", "server": "fakeip"},
       {"rule_set": ["fakeipfilter-cn", "geosite-cn", "geosite-microsoft@cn", "geosite-apple@cn", "geosite-private"], "server": "ali"},
@@ -59,6 +60,7 @@
       {"type": "logical", "mode": "and", "rules": [{"port": [53, 853], "invert": true}, {"clash_mode": "Global", "invert": true}, {"type": "logical", "mode": "or", "rules": [{"ip_is_private": true}, {"rule_set": "geoip-cn"}]}], "action": "bypass"},
       {"type": "logical", "mode": "or", "rules": [{"domain_suffix": "push.apple.com"}, {"rule_set": "geoip-telegram"}], "invert": true, "action": "sniff", "sniffer": ["http", "tls", "stun", "quic", "dns"], "timeout": "100ms"},
       {"type": "logical", "mode": "or", "rules": [{"port": 53}, {"protocol": "dns"}], "action": "hijack-dns"},
+      {"source_ip_cidr": ["192.168.2.100/30","192.168.2.104/29","192.168.2.112/28","192.168.2.128/26","192.168.2.192/27","192.168.2.224/28","192.168.2.240/32"],"action": "route","outbound": "直连"},
       {"ip_is_private": true, "outbound": "直连"},
       {"type": "logical", "mode": "or", "rules": [{"port": 853}, {"protocol": ["stun", "quic"]}], "action": "reject", "no_drop": true},
       {"network": "icmp", "action": "resolve"},
